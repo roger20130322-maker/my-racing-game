@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"><meta name="theme-color" content="#101827">
+<title>極速賽車｜100 關</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="極速賽車">
+<meta name="theme-color" content="#101827">
+<style>
+:root{--bg:#101827;--panel:#1d2b40;--accent:#52e5d4;--road:#354454;--grass:#276247;--player:#ff344c;--line:#f5f1d8;--text:#f7f9fc;--muted:#bdc9d9}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif}body{display:flex;justify-content:center}main{width:min(100%,680px);padding:10px;display:flex;flex-direction:column;gap:9px}.top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}h1{font-size:clamp(20px,5vw,27px);line-height:1.15;margin:0;color:var(--accent)}.stats,.tools,.controls{display:flex;gap:7px;align-items:center}.stats{flex-wrap:wrap}.pill{background:var(--panel);border:1px solid #ffffff18;border-radius:11px;padding:7px 10px;font-size:13px}.tools{flex-wrap:wrap}.btn{color:var(--text);background:var(--panel);border:1px solid #ffffff22;border-radius:13px;font-size:22px;font-weight:800;min-height:48px;padding:9px 12px;touch-action:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}.btn:active,.btn.pressed{filter:brightness(1.35);transform:scale(.96);outline:2px solid var(--accent)}.small{font-size:14px;min-height:36px;padding:7px 10px}.boost{background:#087e78;flex:1}.controls .btn{flex:1}.select{background:var(--panel);color:var(--text);border:1px solid #ffffff30;border-radius:9px;padding:7px;max-width:90px}#stage{position:relative;width:100%}#road{position:relative;z-index:1;display:block;width:100%;height:auto;aspect-ratio:3/4;background:transparent;border:1px solid #ffffff40;border-radius:15px;touch-action:none}#map{position:absolute;right:8px;top:8px;width:clamp(72px,19vw,102px);height:auto;aspect-ratio:2/3;border:2px solid #e6f1ffcc;border-radius:9px;background:transparent;z-index:2;box-shadow:0 3px 16px #0006}#toast{display:none;position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);background:#0a1324ed;border:1px solid var(--accent);border-radius:12px;padding:10px 14px;text-align:center;font-weight:750;z-index:3;max-width:88%}.achievements{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.ach{border:1px solid #ffffff18;background:var(--panel);padding:9px 10px;border-radius:11px;font-size:12px;color:var(--muted)}.ach strong{display:block;color:var(--accent);font-size:13px;margin-bottom:3px}.ach.unlocked{border-color:var(--accent);color:var(--text)}.hint{font-size:12px;color:var(--muted);line-height:1.5;margin:0}.overlay{position:fixed;inset:0;background:#030814df;display:flex;align-items:center;justify-content:center;padding:18px;z-index:10}.dialog{width:min(100%,410px);background:var(--panel);border:1px solid #ffffff38;border-radius:20px;padding:21px;text-align:center;box-shadow:0 18px 70px #0008}.dialog h2{margin:0 0 8px;color:var(--accent);font-size:24px}.dialog p{line-height:1.65;color:var(--text);margin:8px 0 14px}.dialog .btn{width:100%;font-size:17px;margin-top:8px}.dialog .sub{font-size:12px;color:var(--muted)}.hidden{display:none!important}
+
+#roadFallback{position:absolute;inset:0;overflow:hidden;border:1px solid #ffffff40;border-radius:15px;background:#276247;z-index:0;aspect-ratio:3/4}
+.fb-road{position:absolute;left:13.33%;width:73.34%;height:100%;background:#354454;border-left:5px solid #f5f1d8;border-right:5px solid #f5f1d8}
+.fb-line{position:absolute;top:0;bottom:0;width:4px;background:repeating-linear-gradient(to bottom,#f5f1d8 0 42px,transparent 42px 80px);opacity:.9}
+.fb-line.l1{left:33.3%}.fb-line.l2{left:66.6%}
+.fb-car{position:absolute;width:8%;height:8%;border-radius:35% 35% 22% 22%;box-shadow:inset 0 0 0 2px #101827;}
+.fb-car:before{content:"";position:absolute;left:22%;top:18%;width:56%;height:26%;background:#d9f3ff;border-radius:3px}
+.fb-enemy{left:57%;top:25%;background:#ff647c}.fb-player{left:39%;top:72%;background:#ff344c;box-shadow:0 0 0 2px #eaffff,0 0 18px #52e5d4}
+#mapFallback{position:absolute;right:8px;top:8px;width:clamp(72px,19vw,102px);height:auto;aspect-ratio:2/3;border:2px solid #e6f1ffcc;border-radius:9px;background:#08111add;z-index:2;overflow:hidden;box-shadow:0 3px 16px #0006}
+.fb-map-road{position:absolute;left:16.7%;width:66.6%;height:100%;background:#667789;border-left:2px solid #eaf3ff;border-right:2px solid #eaf3ff}
+.fb-map-road:after{content:"";position:absolute;left:49%;top:0;bottom:0;width:2px;background:repeating-linear-gradient(to bottom,#fff 0 13px,transparent 13px 28px)}
+.fb-map-enemy,.fb-map-player{position:absolute;left:46%;width:8px;height:8px;border-radius:50%;z-index:1}.fb-map-enemy{top:28%;background:#ff5b73}.fb-map-player{top:84%;background:#52e5d4;width:11px;height:11px;left:43%;animation:map-drive 2.4s ease-in-out infinite alternate}
+@keyframes map-drive{from{top:84%}to{top:24%}}
+@keyframes fallback-drive{0%{top:72%}100%{top:38%}}
+@keyframes fallback-road{from{background-position:0 0}to{background-position:0 80px}}
+#roadFallback .fb-road{background-image:repeating-linear-gradient(to bottom,transparent 0 36px,#ffffff00 36px 80px);}
+#roadFallback .fb-line{animation:fallback-road .55s linear infinite}
+#roadFallback .fb-player{animation:fallback-drive 2.4s ease-in-out infinite alternate}
+#mapFallback b{position:absolute;top:1px;left:22%;font-size:10px;color:white;z-index:2}
+body.js-ready #roadFallback,body.js-ready #mapFallback{display:none}
+</style></head>
+<body><main>
+<div class="top"><h1>🏎️ 極速賽車｜經典街道</h1><div class="stats"><span class="pill" id="levelText">第 1 / 100 關</span><span class="pill" id="scoreText">分數：0</span></div></div>
+<div class="tools"><label class="pill">關卡 <select id="levelPick" class="select" aria-label="選擇關卡"></select></label><button class="btn small" id="restart">↻ 重玩</button><button class="btn small" id="achievementButton">🏅 成就</button><button class="btn small" id="soundButton">🔊 音效</button></div>
+<div id="stage"><div id="roadFallback" aria-hidden="true"><div class="fb-road"><i class="fb-line l1"></i><i class="fb-line l2"></i><i class="fb-car fb-enemy"></i><i class="fb-car fb-player"></i></div></div><div id="mapFallback" aria-hidden="true"><div class="fb-map-road"><i class="fb-map-enemy"></i><i class="fb-map-player"></i></div><b>小地圖</b></div><canvas id="road" width="480" height="640" aria-label="賽車畫面"></canvas><canvas id="map" width="120" height="180" aria-label="右上角小地圖"></canvas><div id="toast"></div></div>
+<div class="controls"><button class="btn" id="left" aria-label="向左轉">⬅️</button><button class="btn" id="forward" aria-label="點一下開始或停止前進">⬆️ 開始前進</button><button class="btn" id="right" aria-label="向右轉">➡️</button><button class="btn boost" id="boost" aria-label="按住加速">⚡ 加速</button></div>
+<div class="achievements" id="achievementList">
+<div class="ach" id="ach1"><strong>🏁 新手上路</strong><span>完成 1 關</span></div><div class="ach" id="ach2"><strong>⭐ 賽道老手</strong><span>完成 10 關</span></div><div class="ach" id="ach3"><strong>🏆 百關王者</strong><span>完成 100 關</span></div><div class="ach" id="ach4"><strong>💯 高分車手</strong><span>單局達到 1,000 分</span></div><div class="ach" id="ach5"><strong>⚡ 加速狂人</strong><span>累計加速 30 秒</span></div><div class="ach" id="ach6"><strong>🛡️ 閃避高手</strong><span>單關閃過 20 個障礙</span></div>
+</div>
+<p class="hint">操作：按住 ⬅️／➡️ 轉向；車子會自動前進；按住 ⚡ 可明顯加速。障礙物固定不動。電腦可用方向鍵操作。右上角小地圖會標出你的車（亮色三角形）和障礙物。遊戲不載入外部圖片或網路資源；下載後可離線玩。</p>
+</main>
+<div class="overlay hidden" id="overlay"><div class="dialog"><h2 id="dialogTitle">準備發車！</h2><p id="dialogText">挑戰 100 個關卡，閃避車流、解鎖成就，成為賽道王者！</p><button class="btn boost" id="mainAction">🏁 開始遊玩</button><button class="btn hidden" id="closeDialog">返回遊戲</button><p class="sub" id="dialogSub">建議先下載並保存此 HTML 檔案，之後不需網路也能玩。</p></div></div>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id),canvas=$('road'),ctx=canvas.getContext('2d'),mini=$('map'),mctx=mini.getContext('2d');
+const W=480,H=640,LEFT=64,RIGHT=416,LANE=(RIGHT-LEFT)/3, SAVE_KEY='speed100_classic';
+const palette={road:'#354454',grass:'#276247',accent:'#52e5d4',player:'#ff344c',line:'#f5f1d8',obstacles:['#ff647c','#ffbe55','#9a8cff','#e8f2ff']};
+let level=1,completed=0,best=0,score=0,run=false,progress=0,roadOffset=0,spawn=22,obstacles=[],last=0,sound=true,boostSeconds=0,passedThisLevel=0,toastTimer=null;
+let keys={left:false,right:false,forward:false,boost:false};const car={x:240,y:520,w:34,h:54};
+function load(){try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'{}');level=Math.max(1,Math.min(100,Number(d.level)||1));completed=Math.max(0,Math.min(100,Number(d.completed)||0));best=Math.max(0,Number(d.best)||0);boostSeconds=Math.max(0,Number(d.boostSeconds)||0)}catch(e){}}
+function save(){try{localStorage.setItem(SAVE_KEY,JSON.stringify({level,completed,best,boostSeconds}))}catch(e){}}
+for(let i=1;i<=100;i++){const o=document.createElement('option');o.value=String(i);o.textContent=String(i);$('levelPick').appendChild(o)}
+function achievementState(){return {ach1:completed>=1,ach2:completed>=10,ach3:completed>=100,ach4:best>=1000,ach5:boostSeconds>=30,ach6:passedThisLevel>=20}}
+function updateUI(){ $('levelText').textContent=`第 ${level} / 100 關`; $('scoreText').textContent=`分數：${score}`; $('levelPick').value=String(level);const a=achievementState();for(const id of Object.keys(a))$(id).classList.toggle('unlocked',a[id]); }
+function beep(f=520,d=.07){if(!sound)return;try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;const ac=new AC(),o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;g.gain.value=.035;o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d);o.onended=()=>ac.close()}catch(e){}}
+function toast(t){$('toast').textContent=t;$('toast').style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').style.display='none',1800)}
+function showDialog(title,content,button,close=false){$('dialogTitle').textContent=title;$('dialogText').textContent=content;$('mainAction').textContent=button;$('closeDialog').classList.toggle('hidden',!close);$('overlay').classList.remove('hidden')}
+function drawCar(g,x,y,color,isPlayer=false){g.save();g.translate(x,y);g.fillStyle='#090d14';g.fillRect(-19,8,7,18);g.fillRect(12,8,7,18);g.fillRect(-19,39,7,16);g.fillRect(12,39,7,16);g.fillStyle=color;g.beginPath();g.moveTo(-15,15);g.lineTo(-12,-17);g.quadraticCurveTo(0,-27,12,-17);g.lineTo(15,15);g.lineTo(12,28);g.lineTo(-12,28);g.closePath();g.fill();g.fillStyle=isPlayer?'#edfffc':'#b9d8ef';g.fillRect(-10,-11,20,13);g.fillStyle='#fff0ac';g.fillRect(-13,17,7,4);g.fillRect(6,17,7,4);g.restore()}
+function draw(){ctx.clearRect(0,0,W,H);ctx.fillStyle=palette.grass;ctx.fillRect(0,0,W,H);ctx.fillStyle=palette.road;ctx.fillRect(LEFT,0,RIGHT-LEFT,H);ctx.fillStyle=palette.line;ctx.fillRect(LEFT,0,5,H);ctx.fillRect(RIGHT-5,0,5,H);ctx.fillStyle='#ffffffcc';for(let lane=1;lane<3;lane++)for(let y=-70+(roadOffset%80);y<H;y+=80)ctx.fillRect(LEFT+LANE*lane-2,y,4,42);for(let y=-25+(roadOffset%100);y<H;y+=100){ctx.fillStyle=palette.accent;ctx.fillRect(27,y,19,7);ctx.fillRect(434,y+40,19,7)}
+for(const o of obstacles){if(o.type==='cone'){ctx.fillStyle='#ff7c32';ctx.beginPath();ctx.moveTo(o.x,o.y-17);ctx.lineTo(o.x-14,o.y+13);ctx.lineTo(o.x+14,o.y+13);ctx.closePath();ctx.fill();ctx.fillStyle='#fff';ctx.fillRect(o.x-8,o.y+2,16,4)}else drawCar(ctx,o.x,o.y,o.color,false)}drawCar(ctx,car.x,car.y,palette.player,true);
+// Mini-map: player triangle + live obstacle dots
+mctx.clearRect(0,0,120,180);mctx.fillStyle='#08111add';mctx.fillRect(0,0,120,180);mctx.fillStyle='#667789';mctx.fillRect(20,0,80,180);mctx.fillStyle='#eaf3ff';mctx.fillRect(20,0,2,180);mctx.fillRect(98,0,2,180);mctx.fillStyle='#ffffff80';for(let y=18;y<180;y+=28)mctx.fillRect(59,y,2,13);
+for(const o of obstacles){const mx=20+(o.x-LEFT)/(RIGHT-LEFT)*80,my=Math.max(4,Math.min(176, o.y/H*180));mctx.fillStyle=o.type==='cone'?'#ffab49':'#ff5b73';mctx.beginPath();mctx.arc(mx,my,3.2,0,Math.PI*2);mctx.fill()}const px=20+(car.x-LEFT)/(RIGHT-LEFT)*80,py=Math.max(12,Math.min(168,car.y/H*180));mctx.fillStyle=palette.accent;mctx.beginPath();mctx.moveTo(px,py-7);mctx.lineTo(px-6,py+6);mctx.lineTo(px+6,py+6);mctx.closePath();mctx.fill();mctx.fillStyle='#fff';mctx.font='bold 10px system-ui';mctx.fillText('小地圖',40,12)}
+function startGame(){score=0;progress=0;roadOffset=0;spawn=999999;obstacles=[{x:LEFT+LANE*.5,y:105,type:'car',color:palette.obstacles[0]},{x:LEFT+LANE*1.5,y:205,type:'cone',color:palette.obstacles[1]},{x:LEFT+LANE*2.5,y:300,type:'car',color:palette.obstacles[2]},{x:LEFT+LANE*.5,y:395,type:'cone',color:palette.obstacles[1]},{x:LEFT+LANE*1.5,y:455,type:'car',color:palette.obstacles[3]}];passedThisLevel=0;car.x=240;car.y=520;keys.forward=true;$('forward').textContent='⏸️ 暫停前進';run=true;$('overlay').classList.add('hidden');last=performance.now();updateUI();requestAnimationFrame(loop)}
+function crash(){run=false;beep(150,.2);save();showDialog('💥 撞到了！',`第 ${level} 關分數：${score}。躲開車流，再挑戰一次！`,'重新開始');draw()}
+function completedLevel(){run=false;completed=Math.max(completed,level);if(level<100){const finished=level;level++;save();updateUI();beep(820,.1);showDialog('🎉 闖關成功！',`你完成第 ${finished} 關！下一關障礙更多、速度更快。`,'下一關')}else{completed=100;save();updateUI();beep(950,.2);showDialog('🏆 百關全通關！','恭喜你完成全部 100 關，成為賽道王者！','再玩一次')} }
+function loop(now){if(!run)return;const dt=Math.min(2.2,Math.max(.3,(now-last)/16.67));last=now;const isBoost=keys.boost;const speed=(2.45+level*.073)*(isBoost?1.62:1);if(keys.forward)car.y=Math.max(210,car.y-4.8*dt);else car.y=Math.min(540,car.y+1.0*dt);if(isBoost){boostSeconds+=dt/60;save()}roadOffset=(roadOffset+speed*dt*(isBoost?5.8:2.3))%100;const steer=13.5*dt;car.x+=((keys.right?1:0)-(keys.left?1:0))*steer;car.x=Math.max(LEFT+25,Math.min(RIGHT-25,car.x));progress+=speed*dt*(isBoost?1.35:1);score+=Math.max(1,Math.floor(speed*dt*(isBoost?2.2:1)));/* 障礙物固定在畫面上，不會自行移動 */
+best=Math.max(best,score);updateUI();draw();if(progress>=780+level*108){completedLevel();draw();return}save();requestAnimationFrame(loop)}
+function hold(id,key){const el=$(id);const down=e=>{if(e)e.preventDefault();keys[key]=true;el.classList.add('pressed')};const up=e=>{if(e)e.preventDefault();keys[key]=false;el.classList.remove('pressed')};el.addEventListener('pointerdown',down,{passive:false});el.addEventListener('pointerup',up,{passive:false});el.addEventListener('pointercancel',up,{passive:false});el.addEventListener('touchstart',down,{passive:false});el.addEventListener('touchend',up,{passive:false});el.addEventListener('touchcancel',up,{passive:false});el.addEventListener('contextmenu',e=>e.preventDefault());}
+hold('left','left');hold('right','right');hold('boost','boost');
+// 遊戲開場自動前進；此按鈕只用來暫停或繼續。
+$('forward').addEventListener('click',()=>{if(!run){startGame();return;}keys.forward=!keys.forward;$('forward').textContent=keys.forward?'⏸️ 暫停前進':'⬆️ 繼續前進';});window.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight',' ','ArrowUp'].includes(e.key))e.preventDefault();if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a')keys.left=true;if(e.key==='ArrowRight'||e.key.toLowerCase()==='d')keys.right=true;if(e.key==='ArrowUp'||e.key.toLowerCase()==='w'){keys.forward=true;$('forward').textContent='⏸️ 暫停前進';}if(e.key===' ')keys.boost=true});window.addEventListener('keyup',e=>{if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a')keys.left=false;if(e.key==='ArrowRight'||e.key.toLowerCase()==='d')keys.right=false;if(e.key===' ')keys.boost=false});window.addEventListener('blur',()=>{keys.left=false;keys.right=false;keys.boost=false;});document.addEventListener('visibilitychange',()=>{if(document.hidden){keys.left=false;keys.right=false;keys.boost=false;}});
+$('mainAction').onclick=()=>{if($('dialogTitle').textContent.includes('全通關')){level=1;save();updateUI()}startGame()};$('closeDialog').onclick=()=>{$('overlay').classList.add('hidden')};$('restart').onclick=startGame;$('levelPick').onchange=e=>{level=Number(e.target.value);save();updateUI();startGame()};$('achievementButton').onclick=()=>{const a=achievementState();const lines=[['新手上路',a.ach1],['賽道老手',a.ach2],['百關王者',a.ach3],['高分車手',a.ach4],['加速狂人',a.ach5],['閃避高手',a.ach6]];const text=lines.map(([n,v])=>`${v?'✅':'🔒'} ${n}`).join('　');showDialog('🏅 成就圖鑑',text,'繼續遊戲',true)};$('soundButton').onclick=()=>{sound=!sound;$('soundButton').textContent=sound?'🔊 音效':'🔇 靜音';if(sound)beep()};
+load();updateUI();draw();document.body.classList.add('js-ready');startGame();
+})();
+</script><script>
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(console.warn);
+  });
+}
+</script></body></html>
